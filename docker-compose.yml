@@ -55,6 +55,8 @@ services:
             - .venv
         - path: ./backend/pyproject.toml
           action: rebuild
+    environment:
+      - POSTGRES_SERVER=db
 
 volumes:
   app-db-data:
