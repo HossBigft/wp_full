@@ -57,6 +57,11 @@ services:
           action: rebuild
     environment:
       - POSTGRES_SERVER=db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health-check"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   app-db-data:
