@@ -63,6 +63,21 @@ services:
       timeout: 5s
       retries: 5
 
+  frontend:
+    restart: "no"
+    ports:
+      - "5173:80"
+    networks:
+      - traefik-public
+      - default
+    env_file:
+      - .env
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://${DOMAIN?Variable not set}:8000
+        - NODE_ENV=development
+
 volumes:
   app-db-data:
 
