@@ -33,7 +33,24 @@ services:
     ports:
       - "8080:8080"
 
-  
+  prestart:
+    build:
+      context: ./backend
+    networks:
+      - traefik-public
+      - default
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    command: bash scripts/prestart.sh
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    environment:
+      - POSTGRES_SERVER=db
+      
   backend:
     restart: "no"
     ports:
@@ -45,6 +62,12 @@ services:
       context: ./backend
     env_file:
       - .env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      prestart:
+        condition: service_completed_successfully
     develop:
       watch:
         - path: ./backend
